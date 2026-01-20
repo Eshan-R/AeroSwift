@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Booking {{ booking.id }}{% endblock %}
+
+{% block content %}
+<h2>Booking #{{ booking.id }}</h2>
+
+<p><b>Name:</b> {{ booking.passenger_name }}</p>
+<p><b>Email:</b> {{ booking.passenger_email }}</p>
+<p><b>Phone:</b> {{ booking.passenger_phone }}</p>
+
+<p><b>Price:</b> {{ booking.price }} {{ booking.currency }}</p>
+<p><b>Status:</b> {{ booking.status }}</p>
+<p><b>Created:</b> {{ booking.created_at }}</p>
+
+<h3>Flight</h3>
+<pre>{{ booking.flight_data | tojson(indent=2) }}</pre>
+
+{% endblock %}

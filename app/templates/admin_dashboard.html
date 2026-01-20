@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1><i class="fas fa-user-shield"></i> Admin Control Center</h1>
+    <p>Monitor bookings, system health, and audit logs.</p>
+</div>
+
+<div class="dashboard-grid">
+    <a href="{{ url_for('admin.all_bookings') }}" class="dash-card">
+        <i class="fas fa-clipboard-list"></i>
+        <h3>All Bookings</h3>
+        <p>View and manage every ticket in the system.</p>
+    </a>
+
+    <a href="{{ url_for('admin.stats') }}" class="dash-card">
+        <i class="fas fa-chart-line"></i>
+        <h3>Statistics</h3>
+        <p>Check total revenue and booking trends.</p>
+    </a>
+
+    <a href="{{ url_for('admin.view_logs') }}" class="dash-card">
+        <i class="fas fa-history"></i>
+        <h3>Audit Logs</h3>
+        <p>Review security actions and user activity.</p>
+    </a>
+</div>
+{% endblock %}

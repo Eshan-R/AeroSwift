@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}System Logs{% endblock %}
+
+{% block content %}
+<div class="table-card">
+    <h2><i class="fas fa-terminal"></i> Audit Logs</h2>
+    <div class="table-responsive">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User ID</th>
+                    <th>Action</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td class="time-cell">{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td><span class="badge">{{ log.user_id or 'Guest' }}</span></td>
+                    <td><strong>{{ log.action }}</strong></td>
+                    <td class="text-muted">{{ log.ip_address }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

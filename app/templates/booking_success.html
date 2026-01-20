@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}Booking Confirmed{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="success-container" style="text-align: center; max-width: 600px; margin: 50px auto;">
+        <div class="success-icon">
+            <i class="fas fa-check-circle" style="color: #10b981; font-size: 3.5rem; margin-bottom: 20px;"></i>
+        </div>
+        <h2 style="font-size: 2rem; margin-bottom: 10px;">Booking Confirmed!</h2>
+        <p style="color: var(--text-muted);">Thank you, {{ booking.passenger_name }}. Your trip is ready.</p>
+
+        <div class="receipt-card" style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 30px; text-align: left;">
+            
+            {# Safety check for JSON data #}
+            {% set data = booking.flight_data if booking.flight_data is mapping else booking.flight_data|from_json %}
+            {% set segment = data.itineraries[0].segments[0] %}
+
+            <div class="receipt-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-weight: 700; color: var(--primary); font-size: 1.2rem;">
+                    <i class="fas fa-plane-departure"></i> {{ segment.carrierCode }} {{ segment.number }}
+                </span>
+                <span class="status-badge confirmed" style="background: #dcfce7; color: #166534; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">Paid</span>
+            </div>
+            
+            <div class="ticket-info-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <div class="ticket-point">
+                    <h3 style="margin: 0; font-size: 1.8rem;">{{ segment.departure.iataCode }}</h3>
+                    <p style="margin: 0; color: var(--text-muted);">{{ segment.departure.at[11:16] }}</p>
+                </div>
+
+                <div class="ticket-arrow" style="color: #cbd5e1; font-size: 1.5rem;">
+                    <i class="fas fa-plane"></i>
+                </div>
+
+                <div class="ticket-point" style="text-align: right;">
+                    <h3 style="margin: 0; font-size: 1.8rem;">{{ segment.arrival.iataCode }}</h3>
+                    <p style="margin: 0; color: var(--text-muted);">{{ segment.arrival.at[11:16] }}</p>
+                </div>
+            </div>
+            
+            <div class="receipt-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #f8fafc; padding: 20px; border-radius: 10px;">
+                <div>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 2px;">PASSENGER</p>
+                    <p style="font-weight: 700;">{{ booking.passenger_name }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 2px;">SEAT NUMBER</p>
+                    <p style="font-weight: 700; color: var(--primary);">{{ booking.seat.seat_number }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 2px;">TOTAL PRICE</p>
+                    <p style="font-weight: 800; color: var(--accent);">{{ booking.price }} {{ booking.currency }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 2px;">BOOKING ID</p>
+                    <p style="font-weight: 700;">#{{ booking.id }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions" style="margin-top: 40px; display: flex; justify-content: center; gap: 20px;">
+            <a href="{{ url_for('flight.home') }}" class="btn-primary" style="padding: 12px 25px; text-decoration: none; border-radius: 8px;">Book More</a>
+            <a href="{{ url_for('booking.my_bookings_view') }}" class="btn-primary" style="padding: 12px 25px; text-decoration: none; border-radius: 8px; background: #64748b;">All Bookings</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

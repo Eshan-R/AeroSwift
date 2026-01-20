@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block title %}Select Seat{% endblock %}
+
+{% block content %}
+<div class="container"> 
+
+    <div class="booking-container">
+        <div class="flight-summary-banner" style="text-align: center; margin-bottom: 30px;">
+            <h2><i class="fas fa-chair"></i> Select Your Seat</h2>
+            <p style="color: var(--text-muted);">
+                {{ flight['itineraries'][0]['segments'][0]['carrierCode'] }} {{ flight['itineraries'][0]['segments'][0]['number'] }} | 
+                {{ flight['itineraries'][0]['segments'][0]['departure']['iataCode'] }} to {{ flight['itineraries'][0]['segments'][0]['arrival']['iataCode'] }}
+            </p>
+        </div>
+
+        <form action="{{ url_for('booking.pay') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="cabin-container">
+                <div style="text-align: center; font-weight: bold; color: #cbd5e1; margin-bottom: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;">
+                    Cockpit / Front
+                </div>
+                
+                <div class="seat-grid">
+                    {% for seat in seats %}
+                        <label class="seat-item">
+                            <input type="radio" name="seat_id" value="{{ seat.id }}" required 
+                                {% if seat.is_booked %}disabled{% endif %}>
+                            <div class="seat-box">
+                                <i class="fas fa-couch"></i>
+                                <span>{{ seat.seat_number }}</span>
+                            </div>
+                        </label>
+                        
+                        {% if seat.seat_number.endswith('C') %}
+                            <div class="aisle-label"></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="auth-container" style="max-width: 100%; margin-top: 40px;">
+                <h3 style="margin-bottom: 20px;"><i class="fas fa-user-edit"></i> Passenger Details</h3>
+                <div class="search-form">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" placeholder="john@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone" placeholder="+91 XXXXX XXXXX" required>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" class="btn-primary" style="width: 100%; max-width: 300px;">
+                        Continue to Payment
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div> 
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="history-container">
+    <div class="page-header">
+        <h1><i class="fas fa-suitcase-rolling"></i> My Bookings</h1>
+        <p class="text-muted">Manage your upcoming trips and view past flight receipts.</p>
+    </div>
+
+    {% if bookings %}
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Flight Route</th>
+                            <th>Amount Paid</th>
+                            <th>Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in bookings %}
+                        <tr>
+                            <td class="id-cell">#{{ b.id }}</td>
+                            <td>
+                                <div class="route-cell">
+                                    {# Use the 'data' variable to avoid confusion #}
+                                    {% if b.flight_data is mapping %}
+                                        {% set data = b.flight_data %}
+                                    {% else %}
+                                        {% set data = b.flight_data | from_json %}
+                                    {% endif %}
+
+                                    <strong>{{ data.itineraries[0].segments[0].departure.iataCode }}</strong>
+                                    <i class="fas fa-long-arrow-alt-right"></i>
+                                    <strong>{{ data.itineraries[0].segments[0].arrival.iataCode }}</strong>
+                                    
+                                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                                        Flight {{ data.itineraries[0].segments[0].carrierCode }} {{ data.itineraries[0].segments[0].number }}
+                                        | Seat: {{ b.seat.seat_number }}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="price-cell">{{ b.price }} {{ b.currency }}</td>
+                            <td>
+                                <span class="status-badge {{ b.status|lower }}">
+                                    {{ b.status }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ url_for('booking.view_ticket', booking_id=b.id) }}" class="btn-view">
+                                    <i class="fas fa-eye"></i> View Ticket
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-bookings-card">
+            <div class="empty-icon">
+                <i class="fas fa-plane-departure"></i>
+            </div>
+            <h3>No trips found</h3>
+            <p>Your flight history is currently empty. Where would you like to go next?</p>
+            <a href="{{ url_for('flight.home') }}" class="btn-search-now">
+                <i class="fas fa-search"></i> Search Flights
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

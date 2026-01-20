@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="booking-grid">
+    <div class="review-sidebar">
+        <h3>Your Flight</h3>
+        {% set segment = flight["itineraries"][0]["segments"][0] %}
+        <div class="mini-ticket">
+            <div class="route">
+                <strong>{{ segment.departure.iataCode }}</strong> 
+                <i class="fas fa-plane"></i> 
+                <strong>{{ segment.arrival.iataCode }}</strong>
+            </div>
+            <p>{{ segment.carrierCode }} {{ segment.number }}</p>
+            <div class="price-breakdown">
+                <span>Total:</span>
+                <span class="total-amt">{{ price }} {{ currency }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-main">
+        <form method="POST" action="{{ url_for('booking.select_seat') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="seat_id" value="{{ seat_id }}">
+            <h3>Passenger Information</h3>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input name="name" placeholder="As per Passport" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input name="email" type="email" value="{{ current_user.email }}" required>
+            </div>
+            <button type="submit" class="btn-primary">Proceed to Payment</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

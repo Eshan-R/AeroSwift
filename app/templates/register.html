@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>{{ 'Welcome Back' if 'login' in request.path else 'Create Account' }}</h1>
+            <p class="text-muted">Please enter your details to continue to AeroSwift.</p>
+        </div>
+        
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            {% if 'register' in request.path %}
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Full Name</label>
+                <input name="name" type="text" placeholder="John Doe" required>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email Address</label>
+                <input name="email" type="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input name="password" type="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-auth">
+                {{ 'Login' if 'login' in request.path else 'Create Account' }}
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>
+                {{ "Don't have an account?" if 'login' in request.path else "Already have an account?" }}
+                <a href="{{ url_for('auth.register' if 'login' in request.path else 'auth.login') }}">
+                    {{ 'Register' if 'login' in request.path else 'Login' }}
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

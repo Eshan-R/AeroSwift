@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block title %}Search Flights{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="search-section">
+        <h2 style="margin-bottom: 20px; color: var(--primary);">Find Your Next Destination</h2>
+        
+        <form method="POST" action="{{ url_for('flight.search_flights_view') }}" class="search-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="form-group">
+                <label><i class="fas fa-plane-departure"></i> From</label> <input name="departure" placeholder="e.g. DEL" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-plane-arrival"></i> To</label> <input name="arrival" placeholder="e.g. BLR" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-calendar-alt"></i> Date</label>
+                <input type="date" name="date" required>
+            </div>
+
+            <button type="submit" class="btn-search">Search Flights</button>
+        </form>
+    </div>
+
+    <div class="results-container">
+        {% if flights %}
+            <h3 class="results-header">{{ flights|length }} Flights Found</h3>
+            
+            {% for f in flights %}
+                {% set segment = f.itineraries[0].segments[0] %}
+                <div class="ticket-card">
+                    <div class="airline-info">
+                        <span class="carrier" style="display: block; font-size: 1.2rem;">{{ segment.carrierCode }}</span>
+                        <span class="flight-no" style="color: var(--text-muted);">{{ segment.number }}</span>
+                    </div>
+
+                    <div class="route-info">
+                        <div class="origin">
+                            <h4 style="font-size: 1.4rem; margin: 0;">{{ segment.departure.iataCode }}</h4>
+                            <p style="color: var(--text-muted); margin: 0;">{{ segment.departure.at[11:16] }}</p> 
+                        </div>
+                        
+                        <div class="route-visual">
+                            <div class="line"></div>
+                            <i class="fas fa-plane"></i>
+                            <div class="line"></div>
+                        </div>
+
+                        <div class="destination">
+                            <h4 style="font-size: 1.4rem; margin: 0;">{{ segment.arrival.iataCode }}</h4>
+                            <p style="color: var(--text-muted); margin: 0;">{{ segment.arrival.at[11:16] }}</p> 
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-tag">
+                            <span class="currency">{{ f.price.currency }}</span>
+                            <span class="amount">{{ f.price.total }}</span>
+                        </div>
+                        
+                        <form method="POST" action="{{ url_for('booking.flight_details') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="flight_data" value='{{ f | tojson }}'>
+                            <input type="hidden" name="price" value="{{ f.price.total }}">
+                            <input type="hidden" name="currency" value="{{ f.price.currency }}">
+                            <button type="submit" class="btn-book">Book Now</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-results" style="text-align: center; padding: 60px; background: white; border-radius: 16px; border: 1px solid var(--border);">
+                <i class="fas fa-search" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <p style="color: var(--text-muted);">No results yet. Enter your details above to start searching.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

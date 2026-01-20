@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}Review Booking{% endblock %}
+
+{% block content %}
+
+<h2>Review Your Booking</h2>
+
+{% set segment = flight["itineraries"][0]["segments"][0] %}
+
+<div>
+    <p><b>Airline:</b> {{ segment.carrierCode }} {{ segment.number }}</p>
+    <p><b>From:</b> {{ segment.departure.iataCode }}</p>
+    <p><b>To:</b> {{ segment.arrival.iataCode }}</p>
+    <p><b>Departure:</b> {{ segment.departure.at }}</p>
+    <p><b>Arrival:</b> {{ segment.arrival.at }}</p>
+    <p><b>Price:</b> {{ price }} {{ currency }}</p>
+</div>
+
+<hr>
+
+<form method="POST" action="{{ url_for('booking.review') }}">
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="flight_data" value='{{ flight | tojson }}'>
+    <input type="hidden" name="price" value="{{ price }}">
+    <input type="hidden" name="currency" value="{{ currency }}">
+
+    <button type="submit">Continue to Passenger Details</button>
+
+</form>
+
+{% endblock %}

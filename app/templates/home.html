@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 40px;">
+    <h1 style="font-size: 2rem; margin-bottom: 8px;">Hello, Traveler!</h1>
+    <p style="color: var(--text-muted);">Manage your bookings or find a new flight below.</p>
+</div>
+
+<div class="dashboard-grid">
+    <a href="{{ url_for('flight.search_flights_view') }}" class="dash-card">
+        <i class="fas fa-search"></i>
+        <h3>Find Flights</h3>
+        <p>Search routes and book seats.</p>
+    </a>
+
+    <a href="{{ url_for('booking.my_bookings_view') }}" class="dash-card">
+        <i class="fas fa-ticket-alt"></i>
+        <h3>My Trips</h3>
+        <p>View your upcoming flights.</p>
+    </a>
+</div>
+{% endblock %}
