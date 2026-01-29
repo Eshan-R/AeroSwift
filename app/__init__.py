@@ -23,6 +23,7 @@ def create_app():
     migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login' 
+    login_manager.session_protection = "strong"
     login_manager.login_message_category = 'info'
     csrf.init_app(app)
     limiter.init_app(app)
@@ -53,6 +54,13 @@ def create_app():
         except Exception as e:
             print(f"DEBUG: Error in load_user: {e}")
             return None
+        
+    @app.after_request
+    def add_header(response):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
 
     from .routes.auth_routes import auth_bp
     from .routes.flight_routes import flight_bp

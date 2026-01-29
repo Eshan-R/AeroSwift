@@ -10,8 +10,8 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 @auth_bp.route("/login", methods=["GET", "POST"])
 @limiter.limit("10 per minute")
 def login():
-    # if current_user.is_authenticated:
-    #     return redirect(url_for("flight.home"))
+    if current_user.is_authenticated:
+        return redirect(url_for("flight.home"))
     
     if request.method == "POST":
         data = clean_form(request.form)
@@ -20,14 +20,18 @@ def login():
         
         user = User.query.filter_by(email=email).first()
 
-        if user or user.check_password(password):
+        if user and user.check_password(password):
             login_user(user, remember=True)
             session.permanent = True
+            
+            log_action("LOGIN_SUCCESS", user_id=user.id)
             
             next_page = request.args.get('next')
             return redirect(next_page or url_for("flight.home"))
 
+        log_action("LOGIN_FAILURE", email=email)
         flash("Invalid email or password", "danger")         
+
     return render_template("login.html")
 
 @auth_bp.route("/register", methods=["GET", "POST"])
