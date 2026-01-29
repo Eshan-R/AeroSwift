@@ -541,3 +541,15 @@ footer {
     color: var(--text-muted);
     font-size: 0.9rem;
 }
+
+/* This kills any accidental overlays that block clicks */
+.modal-backdrop, .overlay, .fade.show {
+    display: none !important;
+    pointer-events: none !important;
+}
+
+/* Ensure your dashboard links are always clickable */
+.dash-card {
+    position: relative;
+    z-index: 10;
+}
